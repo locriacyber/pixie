@@ -2403,7 +2403,7 @@ proc getGlyphPath*(
     let path = opentype.parseGlyph(rune)
     path.transform(scale(vec2(1, -1)))
     opentype.glyphPaths[rune] = path
-  opentype.glyphPaths.getOrDefault(rune, nil) # Never actually returns nil
+  opentype.glyphPaths.getOrDefault(rune, newPath())
 
 proc getLeftSideBearing*(opentype: OpenType, rune: Rune): float32 {.raises: [].} =
   let glyphId = opentype.getGlyphId(rune).int

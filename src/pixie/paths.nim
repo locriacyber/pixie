@@ -1,3 +1,4 @@
+{.experimental: "strictNotNil".}
 import blends, bumpy, chroma, common, images, internal, masks, paints, strutils, vmath
 
 when defined(amd64) and not defined(pixieNoSimd):
@@ -28,10 +29,11 @@ type
     kind: PathCommandKind
     numbers: seq[float32]
 
-  Path* = ref object
+  PathObj = object
     ## Used to hold paths and create paths.
     commands: seq[PathCommand]
     start, at: Vec2 # Maintained by moveTo, lineTo, etc. Used by arcTo.
+  Path* = ref PathObj not nil
 
   SomePath* = Path | string
 
@@ -49,6 +51,9 @@ when defined(release):
 proc newPath*(): Path {.raises: [].} =
   ## Create a new Path.
   Path()
+
+proc `=init`*(path: var Path) {.noSideEffect.} =
+  path = newPath()
 
 proc pixelScale(transform: Mat3): float32 =
   ## What is the largest scale factor of this transform?
